@@ -1,0 +1,106 @@
+<script type="text/javascript">
+$(document).ready(function() {
+    CKEDITOR.replace('event_body',{
+		toolbar: FckToolbarCfg
+	});
+	
+	$("#cevent").fancybox({
+		'titlePosition'		: 'inside',
+		'transitionIn'		: 'none',
+		'transitionOut'		: 'none'
+	});
+	
+	$("#geotagevent").fancybox({
+		'titlePosition'		: 'inside',
+		'transitionIn'		: 'none',
+		'transitionOut'		: 'none'
+	});
+
+});
+</script>
+
+<div class="container">
+	<!-- Header -->
+	<div class="span-20 prepend-2 last">
+		<div style="float:left;text-align:center;">
+			<hr class="space">
+			<h2 class="header">Geo-Biography <img src="/stylesheets/articles/globe.png" class="menuicon"></h2>
+		</div>
+		<div style="float:right;">
+			<hr class="space">
+			<div id="navcontainer">
+				<ul id="navlist">
+					<li><%= link_to image_tag("/stylesheets/articles/home.png", :class => 'menuicon'), {:action => 'index'}, {:title => 'HOME'} %></li>
+					<li><%= link_to image_tag("/stylesheets/images/view.png", :class => 'menuicon'), {:action => 'show',:id => @article.id}, {:title => 'VIEW PROFILE'} %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/map.png", :class => 'menuicon'), {:action => 'map_view',:id => @article.id}, {:title => 'VIEW OM MAP'}  %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/time.png", :class => 'menuicon'), {:action => 'timeliner',:article_id => @article.id}, {:title => 'VIEW ON TIMELINE'} %></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="bigline"></div>
+	
+	<!-- Content Body -->
+	<div class="span-24 last">
+		<div style="float:left">
+			<h2 class="article_title"><span class="article_description">Editing Profile - </span> <%= @article.title %></h2>
+		</div>
+		<div style="float:right">
+			<h2 class="article_title"><a id="cevent" href="#eventpanel">Add Event</a></h2>
+		</div>
+		<hr>
+		<table class="command">
+			<tr>
+				<td><label for="article_title">Name:</label></td>
+				<td><div class="editable" id="title"><%= @article.title %></div></td>
+			</tr>
+			<tr>
+				<td><label for="article_price">Main Title</label>:</td>
+				<td><div class="editable" id="desc" ><%= @article.desc %></div></td>
+			</tr>
+		</table>
+		<hr class="space">
+	</div>
+	<hr/>
+
+
+	<% @article.events.each do |event| %>
+	<div class="span-24 last">
+		<span>
+			<hr class="space">
+			<div style="float:left;"><h3>&#123; <%= event.title %> &#125;</h3></div>
+			<div style="float:right;">
+				<code><%= link_to image_tag("/stylesheets/images/geotag.png", :class => 'menuicon'), {:action => 'geotag', :id => @article.id, :event_id => event.id}, {:title => 'GEO-TAG EVENT'} %></code>
+				&nbsp; &nbsp;
+				<code><%= link_to image_tag("/stylesheets/images/editevent.png", :class => 'menuicon'), {:action => 'edit_event', :id => @article.id, :event_id => event.id}, {:title => 'EDIT EVENT'} %></code>
+			</div>
+			<hr id="title_separator">
+			<p><%= raw(event.body) %></p>
+			<hr class="space">
+		</span>
+	</div>	
+	<hr class="space"/>
+	<% end %>
+	
+</div>
+
+
+<!-- Add New Event Modal Panel -->
+<div style="display: none;">
+	<div id="eventpanel" style="width:900px;height:500px;overflow:auto;">
+	  <%= form_tag :action => 'addevent', :remote => true, :id => @article.id do %>
+		<fieldset> 
+		  <legend><h3>Add <span class="alt">a new </span>Section</h3></legend> 
+		  <p> 
+		    <label for="event_title">Section's Title:</label><br> 
+		    <%= text_field 'event', 'title' %>
+		  </p>
+		  <p> 
+		    <label for="event_body">Detailed Descsription:</label><br> 
+		    <%= text_area :event, :body %>
+		  </p>
+		</fieldset> 
+	  <% end %>
+	</div> 
+</div>
+

@@ -1,0 +1,131 @@
+<% content_for :javascripts do %>
+	<%= javascript_include_tag 'articles/viewmap' %>
+	<%= javascript_include_tag 'mb/jquery.hoverIntent.min' %>
+	<%= javascript_include_tag 'mb/jquery.mb.flipText' %>
+	<%= javascript_include_tag 'mb/jquery.metadata' %>
+	<%= javascript_include_tag 'mb/mbExtruder' %>
+<% end %>
+<script type="text/javascript">
+$(document).ready(function() {
+	// Slider Right Event-Tags
+    $("#extruderRight_Tags").buildMbExtruder({
+      position:"right",
+      width:500,
+      extruderOpacity:.8,
+      hidePanelsOnClose:true,
+      onExtOpen:function(){},
+      onExtContentLoad:function(){},
+      onExtClose:function(){}
+    });
+	// Slider Article - Events
+	$("#extruderLeft_Events").buildMbExtruder({
+      position:"left",
+      width:600,
+      extruderOpacity:.8,
+      hidePanelsOnClose:true,
+      onExtOpen:function(){},
+      onExtContentLoad:function(){},
+      onExtClose:function(){}
+    });
+	// Slider Layers
+    $("#extruderLayer").buildMbExtruder({
+      position:"right",
+      width:300,
+      extruderOpacity:.8,
+      hidePanelsOnClose:true,
+      onExtOpen:function(){},
+      onExtContentLoad:function(){},
+      onExtClose:function(){}
+    });
+
+});
+</script>
+
+<!-- Content -->
+<div class="container">
+	<hr class="space">
+	<div id="subheader" class="span-24 last">
+		<div style="float:left">
+			<h2 class="header">Geo-Biography <img src="/stylesheets/articles/globe.png" border="0" width="32" height="32"></h2>
+		</div>
+		<div style="float:right">
+			<div id="navcontainer">
+				<ul id="navlist">
+					<li><%= link_to image_tag("/stylesheets/articles/home.png", :class => 'menuicon'), {:action => 'index'}, {:title => 'HOME'} %></li>
+					<li><%= link_to image_tag("/stylesheets/images/view.png", :class => 'menuicon'), {:action => 'show',:id => @article.id}, {:title => 'VIEW PROFILE'} %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/edit.png", :class => 'menuicon'), {:action => 'edit',:id => @article.id}, {:title => 'VIEW PROFILE'} %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/time.png", :class => 'menuicon'), {:action => 'timeliner',:article_id => @article.id}, {:title => 'VIEW ON TIMELINE'} %></li>
+				</ul>
+			</div>
+		</div>
+		<hr>
+	</div>
+
+	<div class="span-24 last">
+		<div id="map-container">
+			<div id="map_canvas" style="height: 500px;"></div>
+		</div>
+	</div>
+</div>
+
+<!-- Article - Events full description -->
+<div id="extruderRight_Tags" class="{title:'Tags'}">
+	<div id="event_content" class="layer_text">
+	<% for event in @events %>
+		<b><u><%= event.title %></u></b>
+		<ul>
+			<% for geotag in event.geotags %>
+				<li><%= geotag.address %><br><%= raw(geotag.description) %></li>
+			<% end %>
+		</ul>
+		<hr class="space">
+	<% end %>
+	</div>
+</div>
+
+<!-- Event - Geotags full description -->
+<div id="extruderLeft_Events" class="{title:'Events'}">
+	<div id="main_event_content" class="event_text">
+		<span class="article_text2"><%= @article.title %></span>
+		<ul><%= @article.desc %></ul>
+		<hr>
+		<% for event in @events %>
+			<u><b><%= event.title %></b></u>
+			<ul><%= raw(event.body) %></ul>
+			<hr>
+		<% end %>
+	</div>
+</div>
+
+<!-- Geographical Layers group by events -->
+<div id="extruderLayer" class="{title:'Layers'}">
+	<div style="float:left">
+		<%= image_tag("/stylesheets/images/layer.png") %>		
+	</div>
+	<div style="float:right">
+		<hr class="space">
+		<span class="layer_desc">Layers are showed by Events</span>
+	</div>
+	<hr class="space">
+	<hr>
+	<% form_tag :action => 'map_view', :remote => true, :id => @article.id do %>
+	<table class="layer_text">
+		<% for event in @events %>
+		<tr>
+			<td><%= check_box_tag "event[]", event.id, @selected.include?(event.id) %></td>
+			<td><label for="layers"><%= event.title %></label></td>
+		<tr>
+		<% end %>
+	</table>
+	<hr>
+	<div style="float:right;">
+		<%= submit_tag "Show", :class => "flat_button" %>
+	</div>
+	<% end %>
+</div>
+
+<!-- Field containing Marker Data for google maps -->
+<div style="display: none;">
+	<textarea id="geo_xml"><%= @tags %></textarea>
+</div>
+

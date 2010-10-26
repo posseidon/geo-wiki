@@ -1,0 +1,184 @@
+<% content_for :javascripts do %>
+	<%= javascript_include_tag 'articles/pinpoint' %>
+	<%= javascript_include_tag 'mb/jquery.hoverIntent.min' %>
+	<%= javascript_include_tag 'mb/jquery.mb.flipText' %>
+	<%= javascript_include_tag 'mb/jquery.metadata' %>
+	<%= javascript_include_tag 'mb/mbExtruder' %>
+<% end %>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#cevent").fancybox({
+		'titlePosition'		: 'inside',
+		'transitionIn'		: 'elastic',
+		'transitionOut'		: 'elastic',
+		'autoscale'         : 'true'
+	});
+
+	CKEDITOR.replace( 'geotag_description' );
+		
+	// Date Time Picker
+	$(function() {
+		$( "#geotag_datum" ).datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: '1900:2010'
+		});
+	});	
+	// Date Time Picker
+	$(function() {
+		$( "#geotag_edatum" ).datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: '1900:2010'
+		});
+	});	
+
+	
+	// Slider Top
+    $("#extruderTop").buildMbExtruder({
+      position:"right",
+      width:400,
+      extruderOpacity:.8,
+      hidePanelsOnClose:true,
+      onExtOpen:function(){},
+      onExtContentLoad:function(){},
+      onExtClose:function(){}
+    });
+	// Slider Right
+    $("#extruderRight").buildMbExtruder({
+      position:"right",
+      width:300,
+      extruderOpacity:.8,
+      hidePanelsOnClose:true,
+      onExtOpen:function(){},
+      onExtContentLoad:function(){},
+      onExtClose:function(){}
+    });
+	// Slider Left
+	$("#extruderLeft").buildMbExtruder({
+      position:"left",
+      width:400,
+      extruderOpacity:.8,
+      hidePanelsOnClose:true,
+      onExtOpen:function(){},
+      onExtContentLoad:function(){},
+      onExtClose:function(){}
+    });
+    
+	$('#address').keypress(function(key){
+		if(key.keyCode == 13){
+			codeAddress();
+		}
+	});
+});
+	
+</script>
+
+
+<div class="container">
+	<hr class="space">
+	<div class="span-20 prepend-2 last">
+		<div style="float:left;text-align:center;">
+			<h2 class="header">Geo-Biography <img src="/stylesheets/articles/globe.png" border="0" width="32" height="32"></h2>
+		</div>
+		<div style="float:right;">
+			<div id="navcontainer">
+				<ul id="navlist">
+					<li><%= link_to image_tag("/stylesheets/articles/home.png", :class => 'menuicon'), {:action => 'index'}, {:title => 'HOME'} %></li>
+					<li><%= link_to image_tag("/stylesheets/images/view.png", :class => 'menuicon'), {:action => 'show',:id => @article.id}, {:title => 'VIEW PROFILE'} %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/edit.png", :class => 'menuicon'), {:action => 'edit',:id => @article.id}, {:title => 'VIEW PROFILE'} %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/map.png", :class => 'menuicon'), {:action => 'map_view',:id => @article.id}, {:title => 'VIEW ON TIMELINE'} %></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="bigline"></div>
+
+	<div class="span-24 last">
+		<div id="map-container">
+			<div id="map_canvas" style="height: 500px;"></div>
+		</div>
+	</div>
+</div>
+
+<div style="display:none">
+	<span class="alt"><a id="cevent" href="#eventpanel" title="'Man are made by events'" class="h3-addDescription">Add Description</a></span>
+</div>						
+
+<div id="extruderTop" class="{title:'Geocoding'}" > 
+	<!-- Geocoding -->
+	<label for="address" class="layer_desc">Geocode Address:</label>
+	<hr class="space">
+	<input id="address" type="textbox" value="Budapest, Hungary" class="geocode">
+	<hr class="space">
+	
+	<!-- Ajax Result for Geocoding -->
+	<div id="geocode-result" class="layer_text"></div>
+
+	
+	<!-- Ajax Result for Reverse Geocoding -->
+	<div style="float:left">
+		<span id="lat" class="layer_text"></span>
+	</div>
+	<div style="float:right">
+		<span id="lng" class="layer_text"></span>
+	</div>
+	<br>
+	<p><div id="geocode-info" class="layer_text"></div></p>
+</div>
+
+<div id="extruderRight" class="{title:'Tags'}" >
+	<hr class="space">
+  	<% for geotag in @geotags %>
+		<ul>
+			<li><%= geotag.title %>:<%= geotag.datum.strftime("%Y-%m-%d") %> - <a onclick="jumpToLocation(<%= geotag.location %>)"><%= geotag.address %></a></li>
+			<%= raw(geotag.description) %>
+		</ul>
+		<br>
+	<% end %>
+	<hr class="space">
+</div>
+
+<div id="extruderLeft" class="{title:'Event'}">
+	<hr>
+	<center><%= link_to ":: Back to Profile ::", :action => 'edit', :id => @article.id %></center>
+	<hr class="space">
+	<hr>
+	<%= raw(@event.body) %>
+	<hr class="space">
+</div>
+
+<!-- Add Geo Tag to Event -->
+<div style="display: none;"> 
+	<div id="eventpanel" >
+		<h3><u><span class="alt">Tag your Geo-Data with description</span></u></h3>
+		<%= form_tag :action => 'save_geotag', :remote => true, :id => @article, :event_id => @event.id do %>
+			<!-- Title of Tag -->
+		    <label for="geotag_title" style="margin-right: 1em;">Title:</label>
+		    <%= text_field :geotag, :title %>			
+			<!-- Start Date -->
+		    <label for="geotag_datum" style="margin-right: 1em;">Start Date:</label>
+		    <%= text_field :geotag, :datum %>
+			<!-- End Date -->
+		    <label for="geotag_edatum" style="margin-right: 1em;">End Date:</label>
+		    <%= text_field :geotag, :edatum %>
+
+			<label for="date-format"> <span class="alt">Default </span> Format <span class="alt"> is</span> mm/dd/yyyy</label>
+	
+			<%= hidden_field  :geotag, :location %>
+			<%= hidden_field  :geotag, :address %>
+		
+			<hr class="space">
+		
+		    <label for="event_body">Detailed Descsription:</label><br>
+			<hr class="space">
+		    <%= text_area :geotag, :description, :width => '100%' %><br>
+		<% end %>
+	</div> 
+</div>
+
+<!-- Field containing Marker Data for google maps -->
+<div style="display: none;">
+	<textarea id="geo_xml"><%= @tags %></textarea>
+</div>
+

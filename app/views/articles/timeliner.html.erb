@@ -1,0 +1,93 @@
+<script>
+  var tl;
+
+  function onLoad() {
+    var eventSource = new Timeline.DefaultEventSource(); 
+    var theme = Timeline.ClassicTheme.create();
+    theme.event.label.width = 250;
+    theme.event.bubble.width=320;
+    theme.event.bubble.height=220;
+
+  var esemenyek = {
+    'events': [
+	<% @events.each do |event| %>
+		<% event.geotags.each do |geotag| %>
+		{
+			<% if geotag.datum and geotag.edatum %>
+			'start': 		'<%= geotag.datum.to_s %>',
+			'end': 			'<%= geotag.edatum.to_s %>',
+			<% else %>
+			'start': 		'<%= geotag.datum.to_s %>',
+			<% end %>
+			'title': 		'<%= geotag.title %> - <%= geotag.address %>',
+			'description': 	'<%= geotag.description %>'
+		},
+		<% end %>
+	<% end %>
+    ]
+  };
+
+	var bandInfos = [
+	Timeline.createBandInfo({
+	    eventSource:    eventSource,
+		date:           "<%= @startdate.strftime("%b %d %Y") %> 00:00:00 GMT",
+	    width:          "70%", 
+	    intervalUnit:   Timeline.DateTime.YEAR, 
+	    intervalPixels: 100
+	}),
+	Timeline.createBandInfo({
+	    overview:       true,
+		date:           "<%= @startdate.strftime("%b %d %Y") %> 00:00:00 GMT",
+	    eventSource:    eventSource,
+	    width:          "30%", 
+	    intervalUnit:   Timeline.DateTime.DECADE, 
+	    intervalPixels: 200
+	})
+	];
+	
+	bandInfos[0].highlight = true;
+    bandInfos[1].syncWith = 0;
+	bandInfos[1].highlight = true;
+
+    tl = Timeline.create(document.getElementById("timeline"), bandInfos);
+    eventSource.loadJSON(esemenyek, '');
+  }
+
+  var resizeTimerID = null;
+  function onResize() {
+      if (resizeTimerID == null) {
+          resizeTimerID = window.setTimeout(function() {
+              resizeTimerID = null;
+              tl.layout();
+          }, 500);
+      }
+  }
+</script>
+
+<div class="container">
+	  <hr class="space">
+		<div class="span-20 prepend-2 last">
+			<div style="float:left;text-align:center;">
+				<h2 class="header">Geo-Biography <img src="/stylesheets/articles/globe.png" border="0" width="32" height="32"></h2>
+			</div>
+			<div style="float:right;">
+				<div id="navcontainer">
+					<ul id="navlist">
+						<li><%= link_to image_tag("/stylesheets/articles/home.png", :class => 'menuicon'), {:action => 'index'}, {:title => 'HOME'} %></li>
+						<li><%= link_to image_tag("/stylesheets/images/view.png", :class => 'menuicon'), {:action => 'show',:id => @article.id}, {:title => 'VIEW PROFILE'} %></li>
+						<li><%= link_to image_tag("/stylesheets/articles/edit.png", :class => 'menuicon'), {:action => 'edit',:id => @article.id}, {:title => 'VIEW PROFILE'} %></li>
+						<li><%= link_to image_tag("/stylesheets/articles/map.png", :class => 'menuicon'), {:action => 'map_view',:id => @article.id}, {:title => 'VIEW ON TIMELINE'} %></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="bigline"></div>
+	  <!-- List of Articles -->
+	  <hr class="space">
+	  <div class="span-24 last">
+	    <div id="timeline" style="height: 200px; border: 1px solid #aaa"></div>	
+	  </div>
+</div>
+
+
+

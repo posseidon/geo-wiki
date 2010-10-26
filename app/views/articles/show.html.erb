@@ -1,0 +1,58 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#tabs").tabs({
+			collapsible: true
+		});
+	});	
+</script>
+
+<div class="container">
+	<!-- Header -->
+	<div class="span-20 prepend-2 last">
+		<div style="float:left;text-align:center;">
+			<hr class="space">
+			<h2 class="header">Geo-Biography <img src="/stylesheets/articles/globe.png" class="menuicon"></h2>
+		</div>
+		<div style="float:right;">
+			<hr class="space">
+			<div id="navcontainer">
+				<ul id="navlist">
+					<li><span class="formInfo"><%= link_to image_tag("/stylesheets/articles/home.png", :class => 'menuicon'), {:action => 'index'}, {:title => 'HOME'} %></span></li>
+					<li><%= link_to image_tag("/stylesheets/articles/edit.png", :class => 'menuicon'), {:action => 'edit',:id => @article.id}, {:title => 'EDIT PROFILE'} %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/map.png", :class => 'menuicon'), {:action => 'map_view',:id => @article.id}, {:title => 'VIEW OM MAP'}  %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/time.png", :class => 'menuicon'), {:action => 'timeliner',:article_id => @article.id}, {:title => 'VIEW ON TIMELINE'} %></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="bigline"></div>
+
+	<hr class="space">
+	<!-- Content Body -->
+	<div class="span-24 last">
+		<div style="float:left;">
+			<h2 class="article_title"><%= @article.title %> - <span class="article_description"> <%= @article.desc %> </span></h2>
+		</div>
+	</div>
+	<hr/>
+	<div class="span-24 last">
+		<div id="tabs">
+			<ul>
+			<% @article.events.each_with_index do |event,index| %>
+				<li>
+					<a href="#tabs-<%= index %>"><%= event.title %></a>
+				</li>
+			<% end %>
+			</ul>
+			<% @article.events.each_with_index do |event,index| %>
+				<div id="tabs-<%= index %>">
+					<p><%= raw(event.body) %></p>
+				</div>
+			<% end %>
+		</div>
+	</div>
+	<hr class="space">
+</div>
+
+

@@ -1,0 +1,95 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#create_profile").fancybox({
+		'titlePosition'		: 'outside',
+		'transitionIn'		: 'none',
+		'transitionOut'		: 'none'
+	});
+});
+</script>
+
+<div class="container">
+  <hr class="space">
+	<div class="span-20 prepend-2 last">
+		<div style="float:left;text-align:center;">
+			<h2 class="header">Geo-Biography <img src="/stylesheets/articles/globe.png" border="0" width="32" height="32"></h2>
+		</div>
+		<div style="float:right;" id="search-bg">
+			<%= form_tag :action => 'index', :method => "get", :remote => true, :update => 'search_result' do %>
+			  <%= text_field_tag(:q, params[:q], :class => 'search') %>
+
+			  <%= submit_tag "Search", :name => nil, :class => 'btn' %>
+			<% end %>
+		</div>
+	</div>
+	<div class="bigline"></div>
+  <!-- List of Articles -->
+  <hr class="space">
+  <div class="span-14 prepend-1 colborder">
+    <h3>People<span class="alt"> you may be </span>Interested<span class="alt"> in: </span></h3>
+	<table>
+		<%= render :partial => 'article', :collection => @articles %>
+	</table>	
+    <hr>
+
+    <div class="span-6 colborder">
+      <h6>Recently Edited Biographies</h6>
+      <hr class="space">
+	  <ol>
+	  	<% for article in @recent %>
+			<li><%= article.title %></li>
+		<% end %>
+	  </ol>
+    </div>
+    <div class="span-6 last">
+      <h6>Recently Added Biographies</h6>
+      <hr class="space">
+	  <ol>
+	  	<% for article in @fresh %>
+			<li><%= article.title %></li>
+		<% end %>
+	  </ol>
+    </div>
+  </div>
+  <div class="span-6 last">
+    <h3><span class="alt">Search Result:</span> <%= @query %></h3>
+    <div id="search_result">
+			<% if !@result.nil? %>
+				<% if @result.size > 0 %>
+					<% for article in @result do %>
+						<div class="smallline"></div>
+						<%= link_to article.title, {:action => 'show', :id => article.id} -%>
+						<p><%=h article.desc%></p>
+					<% end %>			
+				<% else %>
+					<p class="quiet"><center>&#187; Not Found &#171;</center></p>
+					<hr/>
+					<h3><a href="#articlepanel" id="create_profile" title="'Add New Profile'"> <span class="alt">Create Profile &#187;<%= @query %>&#171;</span></a></h3>
+				<% end %>
+			<% end %>
+	</div>
+  </div>
+</div>
+
+
+<div style="display: none;">
+	<div id="articlepanel" style="width:320px;height:180px;overflow:auto;">
+		<hr class="space">
+		<% form_tag :action => 'create'  do %>
+			<h3 class="caps">Profile Header</h3>
+			<div style="float:left;text-align:center;">
+				<table class="command">
+					<tr>
+						<td><label for="article_title">Name</label>:</td>
+						<td><%= text_field 'article', 'title' %></td>
+					</tr>
+					<tr>
+						<td><label for="article_price">Main Title</label>:</td>
+						<td><%= text_field 'article', 'desc' %></td>
+					</tr>
+				</table>				
+			</div>
+			<div style="float:right;"><%= submit_tag "Save and Edit", {:navigation => 'edit'} %></div>
+		<% end %>
+	</div>
+</div>

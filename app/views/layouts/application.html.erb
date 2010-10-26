@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux/x86 (vers 11 February 2007), see www.w3.org" />
+
+  <title>
+  Dummy</title>
+  <%= stylesheet_link_tag 'blueprint/screen' %>
+  <%= stylesheet_link_tag 'blueprint/plugins/fancy-type/screen' %>
+  <%= javascript_include_tag :defaults %><%= yield :javascripts %>
+  <script src=
+  "http://maps.google.com/maps?file=api&amp;v=3&amp;key=ABQIAAAAuLaPZSP2TB-U002ZA3ZhKhTJQa0g3IQ9GZqIMmInSLzwtGDKaBTNqQWhnKZu-e6YbeqTBsNDicWcYA"
+  type="text/javascript">
+  </script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript">
+//<![CDATA[
+  var map = null;
+
+  function initialize() {
+  if (GBrowserIsCompatible()) {
+        var mapOptions = {
+            googleBarOptions : {
+              style : "new",
+            }
+        }
+    map = new GMap2(document.getElementById("map_canvas"),mapOptions);
+        map.setMapType(G_PHYSICAL_MAP);
+    map.setCenter(new GLatLng(37.4419, -122.1419), 13);
+    map.setUIToDefault();
+    map.enableGoogleBar();
+        geocoder = new GClientGeocoder();
+        
+        initializep();
+  }
+  }
+
+  //]]>
+  </script>
+</head>
+
+<body onload="initialize()" onunload="GUnload()">
+  <%= yield %>
+</body>
+</html>

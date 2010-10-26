@@ -1,0 +1,46 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	CKEDITOR.replace('event_body',{
+		toolbar: FckToolbarCfg
+	});
+});
+
+</script>
+<div class="container">
+	<!-- Header -->
+	<div class="span-20 prepend-2 last">
+		<div style="float:left;text-align:center;">
+			<hr class="space">
+			<h2 class="header">Geo-Biography <img src="/stylesheets/articles/globe.png" class="menuicon"></h2>
+		</div>
+		<div style="float:right;">
+			<hr class="space">
+			<div id="navcontainer">
+				<ul id="navlist">
+					<li><span class="formInfo"><%= link_to image_tag("/stylesheets/articles/home.png", :class => 'menuicon'), {:action => 'index'}, {:title => 'HOME'} %></span></li>
+					<li><%= link_to image_tag("/stylesheets/articles/edit.png", :class => 'menuicon'), {:action => 'edit',:id => @article.id}, {:title => 'EDIT PROFILE'} %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/map.png", :class => 'menuicon'), {:action => 'map_view',:id => @article.id}, {:title => 'VIEW OM MAP'}  %></li>
+					<li><%= link_to image_tag("/stylesheets/articles/time.png", :class => 'menuicon'), {:action => 'timeliner',:article_id => @article.id}, {:title => 'VIEW ON TIMELINE'} %></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="bigline"></div>
+
+	<div id="subheader" class="span-24 last">
+		<hr class="space">
+		<h3 class="article_title">Editing  <u><span class="article_description"> <%= @event.title %></span></u> section on - <span class="article_title"> <%= @article.title %></span></h3>
+		<hr>
+	</div>
+
+	<div class="span-24 last"> 
+		  <%= form_tag :action => 'update_event', :remote => true, :id => @article, :event_id => @event.id do %>
+			  <label for="event_title" class="event_title">Title:</label>
+			  <%= text_field 'event', 'title', {:class => 'edit'} %>
+			  
+			  <hr class="space">
+			  <%= text_area :event, :body %>
+		  <% end %>
+	</div>
+
+</div>

@@ -1,0 +1,27 @@
+<html>
+<head>
+  <title>Biographies</title>
+  <%= stylesheet_link_tag 'blueprint/screen' %>
+  <%= stylesheet_link_tag 'blueprint/plugins/fancy-type/screen' %>
+  <%= stylesheet_link_tag 'fancybox/jquery.fancybox-1.3.1' %>
+  <%= stylesheet_link_tag 'articles/biography' %>
+  <%= stylesheet_link_tag 'articles/jquery.contextMenu'%>
+  <%= stylesheet_link_tag 'smoothness/jquery-ui'%>
+  <%= stylesheet_link_tag 'articles/jtip' %>
+  <%= javascript_include_tag :defaults %><%= yield :javascripts %>
+  <%= javascript_include_tag 'jquery.jeditable'%>
+  <%= javascript_include_tag 'fancybox/jquery.fancybox-1.3.1'%>
+  <%= javascript_include_tag 'fancybox/jquery.easing-1.3.pack'%>
+  <%= javascript_include_tag 'ckeditor/ckeditor'%>
+  <%= javascript_include_tag 'ckeditor/adapters/jquery'%>
+  <!-- Utility JS -->
+  <%= javascript_include_tag 'articles/article'%>
+  <!-- Tooltip -->
+  <%= javascript_include_tag 'articles/jtip' %>
+
+</head>
+
+<body>
+  <%= yield %>
+</body>
+</html>

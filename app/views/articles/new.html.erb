@@ -1,0 +1,39 @@
+<div class="container">
+	<div id="header" class="span-24 last">
+	    <hr class="space">
+		<h1 class="alt">.“There is properly no history; only biography”</h1>
+	</div>
+	<hr/>
+	<div id="subheader" class="span-24 last">
+		<h3>Add <span class="alt"> new Biography</span> Profile <span class="alt">to Geo-Bio</span></h3>
+	</div>
+	<hr/>
+	<div class="span-5">
+		<%= image_tag "http://www.ba-motors.de/TEAM/TEAMSTRUKTUR/GFX/Anonym_ER2.jpg", :size => "90x90" %>
+	</div>
+	
+	<% form_tag :action => 'create'  do %>
+	<div class="span-10 colborder" id="content">
+		<h3 class="caps">Profile Header</h3>
+		
+		<table class="command">
+			<tr>
+				<td><label for="article_title">Name:</label>:</td>
+				<td><%= text_field 'article', 'title' %></td>
+			</tr>
+			<tr>
+				<td><label for="article_price">Main Title</label>:</td>
+				<td><%= text_field 'article', 'desc' %></td>
+			</tr>
+		</table>
+	</div>
+	<div class="span-7 last">
+		<h3 class="caps">Actions</h3>
+		    <div id="create_btn"><%= submit_tag "Create", :class => 'btn'%></div>
+			<hr class="space"/>
+		    <div id="cancel_btn"><%= link_to 'Cancel', {:action => 'index'} %></div>
+	</div>
+	<% end %>
+	<hr/>	
+</div>
+
